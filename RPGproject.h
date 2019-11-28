@@ -1,11 +1,13 @@
 //messages for the project
 //INCLUDES
+
 #include <iostream>
 #include "MessagesSet.h"
 using namespace std;
 
 enum 
 {
+
     HELLO,
     GOODBYE,
 };
