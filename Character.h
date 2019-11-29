@@ -93,7 +93,7 @@ class Character {
         int *stats;
         vector<Item> inventory;
 
-        void loadMessenges();
+        void loadMessages();
         void addItem();
         void modifyItem();
         void deleteItem();
