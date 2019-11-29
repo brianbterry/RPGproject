@@ -119,3 +119,117 @@ string Character::summary() {
     s += classType + "\n";
     return s;
 }
+
+void Character::rollStats() {
+    static unsigned seed = 0;
+    if (!seed) { seed = time(0; srand(seed); }
+
+    int sides = 6;
+    int d1, d2, d3, d4, min;
+
+    for (int i = 0; i < NUM_STATS; i++) {
+        //roll4 random dice
+        d1 =(rand() % sides) + 1;
+        d2 =(rand() % sides) + 1;
+        d3 =(rand() % sides) + 1;
+        d4 =(rand() % sides) + 1;
+
+        //find min
+        min = d1;
+        min = d2 < min ? d2 : min;
+        min = d3 < min ? d3 : min;
+        min = d4 < min ? d4 : min;
+
+        //toss out smallest and set stat
+        stats[i] = d1 + d2 + d3 + d4 - min;
+    }
+}
+
+void Character::updateInventory() {
+    string str;
+    int index;
+    bool flag = true;
+    
+    while (flag) {
+        system("cls");
+        cout << *this << endl << endl;
+        cout << mm->getMessage(MENU_INV_MOD);
+        cout << mm->getMessage(PROMPT_CHOICE);
+        getline(cin, str);
+        cout << endl;
+
+        switch (stoi(str)) {
+            case 1:
+                addItem();
+                break
+            case 2:
+                modifyItem();
+                break;
+            case 3:
+                deleteItem();
+                break;
+            case 0:
+                flag = false;
+                break;
+            default:
+                cout << mm->getMessage(ERR_INVALID_CHOICE);
+                system("pause");
+                break;
+        }
+    }
+}
+
+void Character::addItem() {
+    Item item;
+    cin >> item;
+    item.setId(inventory.size() + 1);
+    inventory.push_back(item);
+}
+
+void Character::modifyItem() {
+    string str;
+    int index;
+
+    cout << mm->getMessage(PROMPT_ITEM_MOD);
+    getline(cin, str);
+
+    if (isValidId(stoi(str))) {
+        bool flag = true;
+        index = stoi(str) - 1;
+
+        while (flag) {
+            system("cls");
+            cout << inventory[index] << endl << endl;
+            cout << mm->getMessage(MENU_ITEM_MOD);
+            cout << mm->getMessage(PROMPT_CHOICE);
+            getline(cin, str);
+            cout << endl;
+
+            switch (stoi(str)) {
+            case 1:
+                cout << "New name: ";
+                getline(cin, str);
+                inventory[index].setName(str);
+                break;
+            case 2:
+                cout << "New quantity: ";
+                getline(cin, str);
+                inventory[index].setQuantity(stoi(str));
+                break;
+            case 0:
+                flag = false;
+                break;
+            default:
+                cout << mm->getMessage(ERR_INVALID_CHOICE);
+                system("pause");
+                break;
+            }
+        }
+    }
+    else {
+        cout << mm->getMessage(ERR_ID_NOT_FOUND) << endl;
+        system("pause");
+    }
+}
+
+
