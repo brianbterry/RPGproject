@@ -1,22 +1,31 @@
-//messages for the project
-//INCLUDES
+//Defintitions for RPGPRoject
 
-#include <iostream>
-#include "MessagesSet.h"
-using namespace std;
+#ifndef RPGPROJECT_H
+#define RPGPROJECT_H
 
 enum 
 {
-
     HELLO,
     GOODBYE,
+    MENU_MAIN,
+    MENU_CHAR_MOD,
+    PROMPT_FILENAME,
+    PROMPT_CHOICE,
+    PROMPT_CHAR_DISP,
+    PROMPT_CHAR_MOD,
+    PROMPT_CHAR_DEL,
+    SUCCESS_CHAR_ADD,
+    SUCCESS_CHAR_DEL,
+    SUCCESS_LOAD,
+    SUCCESS_SAVE,
+    HEADER_BRIEF,
+    HEADER_FULLL,
+    LINE1,
+    ERR_FILE_NONE,
+    ERR_FILE_READ,
+    ERR_INVALID_CHOICE,
+    ERR_ID_NOT_FOUND,
 };
 
-void loadMessages(MessagesSet &ms) {
-    ms.add(HELLO, "Hello!\n");
-    ms.add(GOODBYE. "Goodbye!\n");
-}
+#endif
 
-void displayMessage(MessagesSet ms, int key) {
-    cout << ms.getMessage(key);
-}

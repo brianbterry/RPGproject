@@ -232,4 +232,123 @@ void Character::modifyItem() {
     }
 }
 
+void Character::deleteItem() {
+    string str;
+    int index, newId = 1;
+
+    cout << mm->getMessage(PROMPT_ITEM_DEL);
+    getlint(cin, str);
+
+    if(isValidId(stoi(str))) {
+        index = stoi(str) - 1;
+        inventory.erase(inventory.begin() + index);
+        for (int i = 0; i < inventory.size(); i++) {
+            inventory[i].setId(newId);
+            newId++;
+        }
+    }
+    else {
+        cout << mm->getMessage(ERR_ID_NOT_FOUND) << endl;
+    }
+}
+
+void Character::saveCharacter(DataManager* dm) {
+    dm->writeInt(id);
+    dm->writeString(name);
+    dm->writeString(raceType);
+    dm->writeString(classType);
+    dm->writeInt(level);
+    dm->writeInt(armourClass);
+    dm->writeInt(hitPoints);
+    for (int i = 0; i < NUM_STATS; i++) {
+        inventory[i].saveItem(dm);
+    }
+}
+
+void Character::loadCharacter(DataManager* dm) {
+    id = dm->readInt();
+    name = dm->readString();
+    raceType = dm->readString();
+    classType = dm->readString();
+    level = dm->readInt();
+    armourClass = dm->readInt();
+    hitPoints = dm->readInt();
+    for (int = 0; i < NUM_STATS; i++) {
+        stats[i] = dm.readInt();
+    }
+    inventory.clear();
+    int numItems = dm->readInt();
+    for (int i = 0; i <numItems; i++) {
+        Item temp;
+        temp.loadItem(dm);
+        inventory.push_back(temp);
+    }
+}
+
+const Character Character::operator =(const Character &rhs)
+{
+    if (this != &rhs){
+        mm = new MessageManager();
+        for (int i = 0; i < rhs.mm->count(); i++) {
+            string msg = rhs.mm->getMessage(i);
+            mm->addMessage(i, msg);
+        }  
+        id = rhs.id;
+        name = rhs.name;
+        raceType = rhs.raceType;
+        classType = rhs.classType;
+        level = rhs.level;
+        armorClass = rhs.armorClass;
+        hitPoints = rhs.hitPoints;
+        stats = new int[NUM_STATS];
+        for (int i = 0; i < NUM_STATS; i++) {
+             stats[i] = rhs.stats[i];
+        }
+        inventory.clear();
+        for (Item item : rhs.inventory) {
+            Item temp = item;
+            inventory.push_back(temp);
+        }
+    }   
+    return *this;
+}
+
+ostream& operator <<(ostream &strm, const Character &obj) {
+    strm << "[" << obj.id << "}   ";
+    if (obj.id < 10) {
+        strm << " ";
+    }
+    strm << obj.name;
+    strm << ", Level " << obj.classType << endl;
+    strm << obj.mm->getMessage(Character::HEADER_STATS) << endl;
+    strm << setw(4) << obj.hitPoints << setw(5) << obj.armourClass;
+    for (int i = 0; i < obj.inventory.size(); i++) {
+        strm << obj.inventory[i] << endl;
+    }
+    return strm;
+}
+
+istream& operator >>(istream &strm, Character &obj) {
+    string str;
+
+    cout << "Character name: ";
+    getline(strm, str);
+    obj.name = str;
+    cout << "Character race: ";
+    getline(strm, str);
+    obj.raceType = str;
+    cout << "Character class: ";
+    getline(strm, str);
+    obj.classType = str;
+    cout << "Character level: ";
+    getline(strm, str);
+    obj.level = stoi(str);
+    cout << "Character armour class (AC): ";
+    getline(strm, str);
+    obj.armourClass = stoi(str);
+    cout << "Character health (HP): ";
+    getline(strm, str);
+    obj.hitPoints = stoi(str);
+    return strm;
+}
 
