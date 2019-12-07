@@ -187,3 +187,163 @@ void loadCharacters(MessageManager *mm, vector<Character> &v, string &filename) 
     system("pause");
 }
 
+void saveCharacters(MessageManager *, vector<Character> v, string &filename)
+{
+    do {
+        string str;
+        if (filename.length() == 0) {
+            cout << mm->getMessage(ERR_FILE_NONE);
+        }
+        cout << mm->getMessage(PROMPT_FILENAME) << "[" << filename << "]: ";
+        getline(cin, str);
+        if (str.length() != 0) {
+            filename = str;
+        }
+    } while (filename.length() == 0);
+
+    DataManager *dm = new DataManager(filename, DataManager::WRITE);
+    dm->writeInt(v.size());
+    for (Character c : v) {
+        c.saveCharacter(dm);
+    }
+
+    delete dm;
+    dm = nullptr;
+
+    cout << mm->getMessage(SUCCESS_SAVE);
+
+    system("pause");
+}
+
+void listAll(MessageManager *mm, vector<Character> v) {
+    cout << mm->getMessage(HEADER_BRIEF) << endl;
+    for (auto val : v) {
+        cout << val.summary();
+    }
+    cout << mm->getMessage(LINE1) << endl << endl;
+}
+
+void listOne(MessageManager *mm, vector<Character> v) {
+    string str;
+
+    listAll(mm, v);
+    cout << mm->getMessage(PROMPT_CHAR_DISP);
+    getline(cin, str);
+
+    if (isValidId(v, stoi(str))) {
+        system("cls");
+        cout << mm->getMessage(HEADER_FULL) << endl;
+        cout <<v[stoi(str) - 1] << endl;
+    } else {
+        cout << mm->getMessage(ERR_ID_NOT_FOUND) << endl;
+    }
+}
+
+void addCharacter(MessageManager *mm, vector<Character> &v) {
+    Character temp;
+    temp.setId(v.size() + 1);
+    cin >> temp;
+    v.push_back(temp);
+    cout << mm->getMessage(SUCCESS_CHAR_ADD);
+    cout << mm->getMessage(HEADER_FULL) << endl;
+    cout << temp << endl;
+}
+
+void modifyCharacter(MessageManager *mm, vector<Character> &v) {
+    listAll(mm, v);
+
+    string str;
+    int index;
+
+    cout << mm->getMessage(PROMPT_CHAR_MOD);
+    getline(cin, str);
+
+    if (isValidId(v,, stoi(str))) {
+        bool flag = true;
+        index = stoi(str) - 1;
+
+        while (flag) {
+            system("cls");
+            cout << mm->getMessage(HEADER_FULL) << endl;
+            cout << v[index] << endl << endl;
+            cout << mm->getMessage(MENU_CHAR_MOD);
+            cout << mm->getMessage(PROMPT_CHOICE);
+            getline(cin, str);
+        
+            switch (stoi(str)) {
+                case 1:
+                    cout "New name: ";
+                    getline(cin, str);
+                    v[index].setName(str);
+                    break;
+                case 2:
+                    cout <<"New race type: ";
+                    getline(cin, str);
+                    v[index].setRaceType(str);
+                    break;
+                case 3:
+                    cout << "New class type: ";
+                    getline(cin, str);
+                    v[index].setClassType(str);
+                    break;
+                case 4:
+                    v[index].rollStats();
+                    break;
+                case 5:
+                    cout << "New level: ";
+                    getline(cin, str);
+                    v[index].setLevel(stoi(str));
+                    break;
+                case 6:
+                    cout << "New hit points: ";
+                    getline(cin, str);
+                    v[index].setHitPoints(stoi(str));
+                    break;
+                case 7: 
+                    cout << "New armor class: ";
+                    getline(cin, str);
+                    v[index].setArmourClass(stoi(str));
+                    break;
+                case 8:
+                    v[index].updateInventory();
+                    break;
+                case 0:
+                    flag = false;
+                    break;
+                default:
+                    cout << mm->getMessage(ERR_INVALID_CHOICE);
+                    system("pause");
+                    break;
+            }
+        }
+    } else {
+        cout << mm->getMessage(ERR_INVALID_CHOICE);
+        system("pause");
+    }
+}
+
+void deleteCharacter(MessageManager *mm, vector<Character> &v) {
+    listAll(mm, v);
+
+    string str;
+
+    cout << mm->getMessage(PROMPT_CHAR_DEL);
+    getline(cin,str);
+
+    if (isValidId(v, stoi(str))) {
+        int index = stoi(str) - 1;
+        v.erase(v.begin() + index);
+        for (int i = 0; i < v.size(); i++) {
+            v[i].setId(i + 1);
+        }
+        cout << mm->getMessage(SUCCESS_CHAR_DEL);
+        listAll(mm, v);
+    } else {
+        cout << mm->getMessage(ERR_ID_NOT_FOUND) << endl;
+        system("pause");
+    }        
+}
+
+bool isValidId(vector<Character> v, int id) {
+    return (id > 0 && id <= v.size());
+}
