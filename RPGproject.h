@@ -24,7 +24,7 @@ enum
     ERR_FILE_NONE,
     ERR_FILE_READ,
     ERR_INVALID_CHOICE,
-    ERR_ID_NOT_FOUND,
+    ERR_ID_NOT_FOUND
 };
 
 #endif
